@@ -105,6 +105,7 @@
     <ClCompile Include="..\..\src\file_formats\files.cpp" />
     <ClCompile Include="..\..\src\file_formats\ifs.cpp" />
     <ClCompile Include="..\..\src\file_formats\off.cpp" />
+    <ClCompile Include="..\..\src\file_formats\stl.cpp" />
     <ClCompile Include="..\..\src\isct\empty3d.cpp" />
     <ClCompile Include="..\..\src\isct\quantization.cpp" />
     <ClCompile Include="..\..\src\isct\triangle.c">
