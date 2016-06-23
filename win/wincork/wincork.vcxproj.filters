@@ -151,6 +151,9 @@
     <ClCompile Include="..\..\src\file_formats\off.cpp">
       <Filter>Source Files\file_formats</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\file_formats\stl.cpp">
+      <Filter>Source Files\file_formats</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\isct\empty3d.cpp">
       <Filter>Source Files\isct</Filter>
     </ClCompile>
