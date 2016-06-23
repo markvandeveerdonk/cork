@@ -80,7 +80,7 @@ namespace Files {
     {
         std::map<tuple3d, uint32_t> vertexLookup;
 
-        FILE* f = fopen(filename.c_str(), "r");
+        FILE* f = fopen(filename.c_str(), "rb");
         if (f == NULL) {
             fprintf(stderr, "Could not open file %s\n", filename.c_str());
             return 1;
@@ -132,7 +132,7 @@ namespace Files {
 
     int writeSTL(string filename, FileMesh *data)
     {
-        FILE* f = fopen(filename.c_str(), "w");
+        FILE* f = fopen(filename.c_str(), "wb");
         if (f == NULL) {
             fprintf(stderr, "Could not open file %s\n", filename.c_str());
             return 1;
