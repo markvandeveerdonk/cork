@@ -15,6 +15,17 @@ WARNING: Unfortunately, there are a number of known problems with Cork.  I have 
 Installation
 ============
 
+This branch if focussing on Windows support. Support for other platforms is not tested but I try to keep changes compatible.
+
+Windows
+----
+
+Cork uses C++11, so you will need the most recent compiler; Visual Studio 2015 or higher please.  The build requires MPIR arithmetic library. A pre-compiled version is shipped with this code. 
+There are three projects of interest:
+* wincork: builds the wincork executable
+* libwincork: builds the wincork.dll
+* TestLibwincork: a simple application that uses the wincork.dll 
+
 Dependencies (Mac/Linux)
 ------------
 
@@ -43,13 +54,6 @@ that's it.
 
 If the build system is unable to find your GMP installation, please edit the paths in file makeConstants.  In general, the project uses a basic makefile.  In the event that you have to do something more complicated to get the library to compile, or if you are unable to get it to compile, please e-mail me or open an issue on GitHub.  Doing so is much more effective than cursing at your computer, and will save other users trouble in the future.
 
-
-Windows
-----
-
-Cork uses C++11, so you will need the most recent compiler; Visual Studio 2012 or higher please.  You will also need to install the MPIR arithmetic library into your Visual Studio environment.
-
-Once this is done, you can use the solution and project files in the /win/ subdirectory to build the demo program.  The solution/project is not currently configured to build a DLL.  Please bug me if this is an issue for you.
 
 
 Licensing
