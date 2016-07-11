@@ -95,6 +95,19 @@ void loadMesh(string filename, CorkTriMesh *out)
     
     file2corktrimesh(filemesh, out);
 }
+
+bool loadMesh(string filename, CorkTriMesh& out)
+{
+	Files::FileMesh filemesh;
+
+	if (Files::readTriMesh(filename, &filemesh) > 0) {
+		return false;
+	}
+
+	file2corktrimesh(filemesh, &out);
+	return true;
+}
+
 void saveMesh(string filename, CorkTriMesh in)
 {
     Files::FileMesh filemesh;

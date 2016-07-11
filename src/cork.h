@@ -54,7 +54,7 @@ struct CorkTriMesh
 
 CORKLIBRARY_API void freeCorkTriMesh(CorkTriMesh *mesh);
 
-CORKLIBRARY_API void loadMesh(std::string filename, CorkTriMesh *out);
+CORKLIBRARY_API bool loadMesh(std::string filename, CorkTriMesh& out);
 CORKLIBRARY_API void saveMesh(std::string filename, CorkTriMesh in);
 
 // the inputs to Boolean operations must be "solid":
