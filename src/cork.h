@@ -25,6 +25,18 @@
 // +-------------------------------------------------------------------------
 #pragma once
 
+#include <string>
+
+#ifdef _WIN32
+	#ifdef CORKLIBRARY_EXPORTS
+		#define CORKLIBRARY_API __declspec(dllexport) 
+	#else
+		#define CORKLIBRARY_API __declspec(dllimport) 
+	#endif
+#else
+	#define CORKLIBRARY_API 
+#endif
+
 #ifndef uint
 typedef unsigned int uint;
 #endif
@@ -40,7 +52,10 @@ struct CorkTriMesh
     float   *vertices;
 };
 
-void freeCorkTriMesh(CorkTriMesh *mesh);
+CORKLIBRARY_API void freeCorkTriMesh(CorkTriMesh *mesh);
+
+CORKLIBRARY_API void loadMesh(std::string filename, CorkTriMesh *out);
+CORKLIBRARY_API void saveMesh(std::string filename, CorkTriMesh in);
 
 // the inputs to Boolean operations must be "solid":
 //  -   closed (aka. watertight; see comment at bottom)
@@ -50,25 +65,25 @@ void freeCorkTriMesh(CorkTriMesh *mesh);
 // orientation, the object is interpreted as its unbounded complement
 
 // This function will test whether or not a mesh is solid
-bool isSolid(CorkTriMesh mesh);
+CORKLIBRARY_API bool isSolid(CorkTriMesh mesh);
 
 // Boolean operations follow
 // result = A U B
-void computeUnion(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
+CORKLIBRARY_API void computeUnion(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
 // result = A - B
-void computeDifference(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
+CORKLIBRARY_API void computeDifference(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
 // result = A ^ B
-void computeIntersection(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
+CORKLIBRARY_API void computeIntersection(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
 // result = A XOR B
-void computeSymmetricDifference(
+CORKLIBRARY_API void computeSymmetricDifference(
                         CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
 // Not a Boolean operation, but related:
 //  No portion of either surface is deleted.  However, the
 //  curve of intersection between the two surfaces is made explicit,
 //  such that the two surfaces are now connected.
-void resolveIntersections(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
+CORKLIBRARY_API void resolveIntersections(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
