@@ -33,14 +33,28 @@ int main()
 	freeCorkTriMesh(&out1);
 	std::cout << "Intersection done" << std::endl;
 
-	computeDifference(in1, in2, &out1);
-	saveMesh("difference.stl", out1);
-	freeCorkTriMesh(&out1);
-	std::cout << "Difference done" << std::endl;
-
 	computeSymmetricDifference(in1, in2, &out1);
 	saveMesh("xor.stl", out1);
 	std::cout << "XOR done" << std::endl;
+	freeCorkTriMesh(&out1);
+
+	computeDifference(in1, in2, &out1);
+	saveMesh("difference.stl", out1);
+	std::cout << "Difference done" << std::endl;
+
+	translateZ(out1, 5.0);
+	saveMesh("difference_moved.stl", out1);
+	std::cout << "Move done" << std::endl;
+
+	CorkTriMesh out2 = out1;
+
+	rotate180X(out1);
+	saveMesh("difference_moved_and_rotatedX.stl", out1);
+	std::cout << "RotateX done" << std::endl;
+
+	rotate180Y(out2);
+	saveMesh("difference_moved_and_rotatedY.stl", out2);
+	std::cout << "RotateY done" << std::endl;
 
 	return 0;
 }

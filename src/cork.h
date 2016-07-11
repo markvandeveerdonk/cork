@@ -87,3 +87,6 @@ CORKLIBRARY_API void computeSymmetricDifference(
 //  such that the two surfaces are now connected.
 CORKLIBRARY_API void resolveIntersections(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
+CORKLIBRARY_API void translateZ(CorkTriMesh& in0, float deltaZ);
+CORKLIBRARY_API void rotate180X(CorkTriMesh& in0);
+CORKLIBRARY_API void rotate180Y(CorkTriMesh& in0);

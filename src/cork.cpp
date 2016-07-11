@@ -258,3 +258,30 @@ void resolveIntersections(
     corkMesh2CorkTriMesh(&cmIn0, out);
 }
 
+void translateZ(CorkTriMesh& in0, float deltaZ)
+{
+	for (uint i = 0; i < in0.n_vertices; i++) {
+		in0.vertices[3 * i + 2] += deltaZ;
+	}
+}
+
+void rotate180X(CorkTriMesh& in0)
+{
+	float* pF = in0.vertices + 1; // Take address of first Y-coordinate
+	for (uint i = 0; i < in0.n_vertices; i++) {
+		pF[0] = -pF[0]; // invert Y
+		pF[1] = -pF[1]; // invert Z
+		pF += 3; // Go to next vertex
+	}
+}
+
+void rotate180Y(CorkTriMesh& in0)
+{
+	float* pF = in0.vertices; // Take address of first X-coordinate
+	for (uint i = 0; i < in0.n_vertices; i++) {
+		pF[0] = -pF[0]; // invert X
+		pF[2] = -pF[2]; // invert Z
+		pF += 3; // Go to next vertex
+	}
+}
+
