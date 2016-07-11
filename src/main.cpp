@@ -59,9 +59,9 @@ void file2corktrimesh(
     }
     
     for(uint i=0; i<out->n_vertices; i++) {
-        (out->vertices)[3*i+0] = in.vertices[i].pos.x;
-        (out->vertices)[3*i+1] = in.vertices[i].pos.y;
-        (out->vertices)[3*i+2] = in.vertices[i].pos.z;
+        (out->vertices)[3*i+0] = static_cast<float>(in.vertices[i].pos.x);
+        (out->vertices)[3*i+1] = static_cast<float>(in.vertices[i].pos.y);
+        (out->vertices)[3*i+2] = static_cast<float>(in.vertices[i].pos.z);
     }
 }
 

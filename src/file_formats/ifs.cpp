@@ -138,9 +138,9 @@ inline bool read_vertex(ifstream &in, Vec3d &data)
 inline bool write_vertex(ofstream &out, const Vec3d &data)
 {
     // data is coerced from double to float automatically here
-    bool result =   write_float32(out, data.x) &&
-                    write_float32(out, data.y) &&
-                    write_float32(out, data.z);
+    bool result =   write_float32(out, static_cast<float>(data.x)) &&
+                    write_float32(out, static_cast<float>(data.y)) &&
+                    write_float32(out, static_cast<float>(data.z));
     return result;
 }
 

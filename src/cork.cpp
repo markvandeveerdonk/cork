@@ -170,9 +170,9 @@ void corkMesh2CorkTriMesh(
     }
     
     for(uint i=0; i<out->n_vertices; i++) {
-        (out->vertices)[3*i+0] = raw.vertices[i].pos.x;
-        (out->vertices)[3*i+1] = raw.vertices[i].pos.y;
-        (out->vertices)[3*i+2] = raw.vertices[i].pos.z;
+        (out->vertices)[3*i+0] = static_cast<float>(raw.vertices[i].pos.x);
+        (out->vertices)[3*i+1] = static_cast<float>(raw.vertices[i].pos.y);
+        (out->vertices)[3*i+2] = static_cast<float>(raw.vertices[i].pos.z);
     }
 }
 
