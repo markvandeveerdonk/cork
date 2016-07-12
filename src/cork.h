@@ -78,8 +78,7 @@ CORKLIBRARY_API void computeDifference(CorkTriMesh in0, CorkTriMesh in1, CorkTri
 CORKLIBRARY_API void computeIntersection(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
 // result = A XOR B
-CORKLIBRARY_API void computeSymmetricDifference(
-                        CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
+CORKLIBRARY_API void computeSymmetricDifference(CorkTriMesh in0, CorkTriMesh in1, CorkTriMesh *out);
 
 // Not a Boolean operation, but related:
 //  No portion of either surface is deleted.  However, the
@@ -90,3 +89,51 @@ CORKLIBRARY_API void resolveIntersections(CorkTriMesh in0, CorkTriMesh in1, Cork
 CORKLIBRARY_API void translateZ(CorkTriMesh& in0, float deltaZ);
 CORKLIBRARY_API void rotate180X(CorkTriMesh& in0);
 CORKLIBRARY_API void rotate180Y(CorkTriMesh& in0);
+
+namespace CorkCommander {
+
+	/* Management functions */
+
+	// Deletes all meshes from memory
+	CORKLIBRARY_API void ClearAllMeshes();
+
+	// Deletes mesh with given ID from memory
+	CORKLIBRARY_API bool DeleteMesh(std::string ID);
+
+	// Creates a copy of mesh identified by srcID and store under destID
+	CORKLIBRARY_API bool CopyMesh(std::string srcID, std::string destID);
+
+	// Loads the mesh from the file specified by fileName and stores it internally under ID
+	CORKLIBRARY_API bool LoadMesh(std::string ID, std::string fileName);
+
+	// Save the mesh stored internally under ID as file fileName.
+	CORKLIBRARY_API bool SaveMesh(std::string ID, std::string fileName);
+
+	/* Cork native functions */
+
+	// Can cork handle the model?
+	CORKLIBRARY_API bool IsSolid(std::string ID);
+
+	// Create union model from models stored internally and identified by InID1 and InID2 
+	// and store as OutID.
+	CORKLIBRARY_API bool Union(std::string ID1, std::string ID2, std::string OutID);
+
+	// Create difference model from model stored internally and identified by InID1 and InID2 
+	// and store as OutID. Model ID2 is subtraced from ID1.
+	CORKLIBRARY_API bool Difference(std::string ID1, std::string ID2, std::string OutID);
+
+	// Create intersection model from models stored internally and identified by InID1 and InID2 
+	// and store as OutID.
+	CORKLIBRARY_API bool Intersection(std::string ID1, std::string ID2, std::string OutID);
+
+	// Perform XOR operation on models stored internally and identified by InID1 and InID2 
+	// and store as OutID.
+	CORKLIBRARY_API bool Xor(std::string ID1, std::string ID2, std::string OutID);
+
+	/* Added manipulation functions */
+
+	CORKLIBRARY_API bool TranslateZ(std::string ID, float deltaZ);
+	CORKLIBRARY_API bool Rotate180X(std::string ID);
+	CORKLIBRARY_API bool Rotate180Y(std::string ID);
+
+}

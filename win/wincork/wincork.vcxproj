@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\mpir_win32_gc_lib;$(ProjectDir)..\..\src;$(ProjectDir)..\..\src\accel;$(ProjectDir)..\..\src\file_formats;$(ProjectDir)..\..\src\isct;$(ProjectDir)..\..\src\math;$(ProjectDir)..\..\src\mesh;$(ProjectDir)..\..\src\rawmesh;$(ProjectDir)..\..\src\util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_USE_MATH_DEFINES;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CORKLIBRARY_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_USE_MATH_DEFINES;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -67,7 +67,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\mpir_win32_gc_lib;$(ProjectDir)..\..\src;$(ProjectDir)..\..\src\accel;$(ProjectDir)..\..\src\file_formats;$(ProjectDir)..\..\src\isct;$(ProjectDir)..\..\src\math;$(ProjectDir)..\..\src\mesh;$(ProjectDir)..\..\src\rawmesh;$(ProjectDir)..\..\src\util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_USE_MATH_DEFINES;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CORKLIBRARY_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_USE_MATH_DEFINES;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
