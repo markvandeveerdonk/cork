@@ -288,173 +288,171 @@ void rotate180Y(CorkTriMesh& in0)
 extern bool loadMesh(std::string filename, CorkTriMesh& out);
 extern void saveMesh(std::string filename, CorkTriMesh in);
 
-namespace CorkCommander {
 #include <map>
-	static std::map<std::string, CorkTriMesh*> meshDict;
+static std::map<int, CorkTriMesh*> meshDict;
 	
-	bool LoadMesh(std::string ID, std::string fileName)
-	{
-		CorkTriMesh* pMesh = new CorkTriMesh();
-		bool success = loadMesh(fileName, *pMesh);
-		if (success) {
-			meshDict[ID] = pMesh;
-		}
-		else {
-			delete pMesh;
-		}
-		return success;
+bool LoadMesh(int ID, char* fileName)
+{
+	CorkTriMesh* pMesh = new CorkTriMesh();
+	bool success = loadMesh(fileName, *pMesh);
+	if (success) {
+		meshDict[ID] = pMesh;
 	}
-
-	bool SaveMesh(std::string ID, std::string fileName)
-	{
-		auto it = meshDict.find(ID);
-		if (it == meshDict.end()) {
-			return false;
-		}
-		saveMesh(fileName, *it->second);
-		return true;
+	else {
+		delete pMesh;
 	}
-
-	void ClearAllMeshes()
-	{
-		for (auto it = meshDict.begin(); it != meshDict.end(); it++) {
-			delete(it->second);
-		}
-		meshDict.clear();
-	}
-
-	bool DeleteMesh(std::string ID)
-	{
-		auto it = meshDict.find(ID);
-		if (it == meshDict.end()) {
-			return false;
-		}
-		delete(it->second);
-		meshDict.erase(it);
-		return true;
-	}
-
-	bool CopyMesh(std::string srcID, std::string destID)
-	{
-		auto it = meshDict.find(srcID);
-		if (it == meshDict.end()) {
-			return false;
-		}
-		CorkTriMesh* pMesh = new CorkTriMesh();
-		*pMesh = *it->second;
-		meshDict[destID] = pMesh;
-		return true;
-	}
-
-	bool IsSolid(std::string ID)
-	{
-		auto it = meshDict.find(ID);
-		if (it == meshDict.end()) {
-			return false;
-		}
-		return isSolid(*it->second);
-	}
-
-	bool Union(std::string InID1, std::string InID2, std::string OutID)
-	{
-		auto it1 = meshDict.find(InID1);
-		if (it1 == meshDict.end()) {
-			return false;
-		}
-		auto it2 = meshDict.find(InID2);
-		if (it2 == meshDict.end()) {
-			return false;
-		}
-		DeleteMesh("OutID");
-
-		CorkTriMesh* pMesh = new CorkTriMesh();
-		computeUnion(*it1->second, *it2->second, pMesh);
-		meshDict[OutID] = pMesh;
-		return true;
-	}
-
-	bool Difference(std::string InID1, std::string InID2, std::string OutID)
-	{
-		auto it1 = meshDict.find(InID1);
-		if (it1 == meshDict.end()) {
-			return false;
-		}
-		auto it2 = meshDict.find(InID2);
-		if (it2 == meshDict.end()) {
-			return false;
-		}
-		DeleteMesh("OutID");
-
-		CorkTriMesh* pMesh = new CorkTriMesh();
-		computeDifference(*it1->second, *it2->second, pMesh);
-		meshDict[OutID] = pMesh;
-		return true;
-	}
-
-	bool Intersection(std::string InID1, std::string InID2, std::string OutID)
-	{
-		auto it1 = meshDict.find(InID1);
-		if (it1 == meshDict.end()) {
-			return false;
-		}
-		auto it2 = meshDict.find(InID2);
-		if (it2 == meshDict.end()) {
-			return false;
-		}
-		DeleteMesh("OutID");
-
-		CorkTriMesh* pMesh = new CorkTriMesh();
-		computeIntersection(*it1->second, *it2->second, pMesh);
-		meshDict[OutID] = pMesh;
-		return true;
-	}
-
-	bool Xor(std::string InID1, std::string InID2, std::string OutID)
-	{
-		auto it1 = meshDict.find(InID1);
-		if (it1 == meshDict.end()) {
-			return false;
-		}
-		auto it2 = meshDict.find(InID2);
-		if (it2 == meshDict.end()) {
-			return false;
-		}
-		DeleteMesh("OutID");
-
-		CorkTriMesh* pMesh = new CorkTriMesh();
-		computeSymmetricDifference(*it1->second, *it2->second, pMesh);
-		meshDict[OutID] = pMesh;
-		return true;
-	}
-
-	bool TranslateZ(std::string ID, float deltaZ)
-	{
-		auto it = meshDict.find(ID);
-		if (it == meshDict.end()) {
-			return false;
-		}
-		translateZ(*it->second, deltaZ);
-		return true;
-	}
-
-	bool Rotate180X(std::string ID)
-	{
-		auto it = meshDict.find(ID);
-		if (it == meshDict.end()) {
-			return false;
-		}
-		rotate180X(*it->second);
-		return true;
-	}
-	
-	bool Rotate180Y(std::string ID)
-	{
-		auto it = meshDict.find(ID);
-		if (it == meshDict.end()) {
-			return false;
-		}
-		rotate180Y(*it->second);
-		return true;
-	}
-
+	return success;
 }
+
+bool SaveMesh(int ID, char* fileName)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	saveMesh(fileName, *it->second);
+	return true;
+}
+
+void ClearAllMeshes()
+{
+	for (auto it = meshDict.begin(); it != meshDict.end(); it++) {
+		delete(it->second);
+	}
+	meshDict.clear();
+}
+
+bool DeleteMesh(int ID)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	delete(it->second);
+	meshDict.erase(it);
+	return true;
+}
+
+bool CopyMesh(int srcID, int destID)
+{
+	auto it = meshDict.find(srcID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	CorkTriMesh* pMesh = new CorkTriMesh();
+	*pMesh = *it->second;
+	meshDict[destID] = pMesh;
+	return true;
+}
+
+bool IsSolid(int ID)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	return isSolid(*it->second);
+}
+
+bool Union(int InID1, int InID2, int OutID)
+{
+	auto it1 = meshDict.find(InID1);
+	if (it1 == meshDict.end()) {
+		return false;
+	}
+	auto it2 = meshDict.find(InID2);
+	if (it2 == meshDict.end()) {
+		return false;
+	}
+	DeleteMesh(OutID);
+
+	CorkTriMesh* pMesh = new CorkTriMesh();
+	computeUnion(*it1->second, *it2->second, pMesh);
+	meshDict[OutID] = pMesh;
+	return true;
+}
+
+bool Difference(int InID1, int InID2, int OutID)
+{
+	auto it1 = meshDict.find(InID1);
+	if (it1 == meshDict.end()) {
+		return false;
+	}
+	auto it2 = meshDict.find(InID2);
+	if (it2 == meshDict.end()) {
+		return false;
+	}
+	DeleteMesh(OutID);
+
+	CorkTriMesh* pMesh = new CorkTriMesh();
+	computeDifference(*it1->second, *it2->second, pMesh);
+	meshDict[OutID] = pMesh;
+	return true;
+}
+
+bool Intersection(int InID1, int InID2, int OutID)
+{
+	auto it1 = meshDict.find(InID1);
+	if (it1 == meshDict.end()) {
+		return false;
+	}
+	auto it2 = meshDict.find(InID2);
+	if (it2 == meshDict.end()) {
+		return false;
+	}
+	DeleteMesh(OutID);
+
+	CorkTriMesh* pMesh = new CorkTriMesh();
+	computeIntersection(*it1->second, *it2->second, pMesh);
+	meshDict[OutID] = pMesh;
+	return true;
+}
+
+bool Xor(int InID1, int InID2, int OutID)
+{
+	auto it1 = meshDict.find(InID1);
+	if (it1 == meshDict.end()) {
+		return false;
+	}
+	auto it2 = meshDict.find(InID2);
+	if (it2 == meshDict.end()) {
+		return false;
+	}
+	DeleteMesh(OutID);
+
+	CorkTriMesh* pMesh = new CorkTriMesh();
+	computeSymmetricDifference(*it1->second, *it2->second, pMesh);
+	meshDict[OutID] = pMesh;
+	return true;
+}
+
+bool TranslateZ(int ID, float deltaZ)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	translateZ(*it->second, deltaZ);
+	return true;
+}
+
+bool Rotate180X(int ID)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	rotate180X(*it->second);
+	return true;
+}
+	
+bool Rotate180Y(int ID)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	rotate180Y(*it->second);
+	return true;
+}
+
