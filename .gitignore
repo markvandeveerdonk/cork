@@ -17,3 +17,4 @@ win/wincork/*.opensdf
 # in case you're on mac
 .DS_Store
 
+/win/TestLibwincork/*.stl
