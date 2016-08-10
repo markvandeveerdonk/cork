@@ -294,6 +294,21 @@ void rotate180Y(CorkTriMesh& in0)
 	}
 }
 
+void rotateZ(CorkTriMesh& in0, float angle)
+{
+	float s = sin(angle);
+	float c = cos(angle);
+
+	float* pF = in0.vertices; // Take address of first X-coordinate
+	for (uint i = 0; i < in0.n_vertices; i++) {
+		float x = in0.vertices[3 * i + 0];
+		float y = in0.vertices[3 * i + 1];
+
+		in0.vertices[3 * i + 0] = x * c - y * s;
+		in0.vertices[3 * i + 1] = x * s + y * c;
+	}
+}
+
 extern bool loadMesh(std::string filename, CorkTriMesh& out);
 extern void saveMesh(std::string filename, CorkTriMesh in);
 
@@ -475,3 +490,12 @@ bool Rotate180Y(int ID)
 	return true;
 }
 
+bool RotateZ(int ID, float angle)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	rotateZ(*it->second, angle);
+	return true;
+}

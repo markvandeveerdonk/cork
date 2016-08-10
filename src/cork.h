@@ -90,6 +90,7 @@ CORKLIBRARY_API void translateZ(CorkTriMesh& in0, float deltaZ);
 CORKLIBRARY_API void translate(CorkTriMesh& in0, float deltaX, float deltaY, float deltaZ);
 CORKLIBRARY_API void rotate180X(CorkTriMesh& in0);
 CORKLIBRARY_API void rotate180Y(CorkTriMesh& in0);
+CORKLIBRARY_API void rotateZ(CorkTriMesh& in0, float angle);
 
 /*
  * C# friendly versions of the functions above.
@@ -140,3 +141,4 @@ CORKLIBRARY_API bool TranslateZ(int ID, float deltaZ);
 CORKLIBRARY_API bool Translate(int ID, float deltaX, float deltaY, float deltaZ);
 CORKLIBRARY_API bool Rotate180X(int ID);
 CORKLIBRARY_API bool Rotate180Y(int ID);
+CORKLIBRARY_API bool RotateZ(int ID, float angle);

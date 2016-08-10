@@ -65,11 +65,15 @@ namespace TestLibwincorkNET
 
             Assert(Cork.Translate(Out1, 1, 2, 3));
             Assert(Cork.SaveMesh(Out1, "Difference_movedZ_and_rotatedX_and_moved_again.stl"));
-            Console.WriteLine("RotateX done");
+            Console.WriteLine("Translate done");
 
             Assert(Cork.Rotate180Y(Out2));
             Assert(Cork.SaveMesh(Out2, "difference_movedZ_and_rotatedY.stl"));
             Console.WriteLine("RotateY done");
+
+            Assert(Cork.RotateZ(Out2, (float)Math.PI / 6));
+            Assert(Cork.SaveMesh(Out2, "difference_movedZ_and_rotatedY_and_rotatedZ.stl"));
+            Console.WriteLine("RotateZ(30 deg) done");
         }
     }
 }

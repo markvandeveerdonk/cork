@@ -69,5 +69,8 @@ namespace WincorkNET
 
         [DllImport("Wincork.dll", CallingConvention=CallingConvention.Cdecl)]
         public static extern bool Rotate180Y(int ID);
+
+        [DllImport("Wincork.dll", CallingConvention=CallingConvention.Cdecl)]
+        public static extern bool RotateZ(int ID, float angle);
     }
 }
