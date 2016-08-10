@@ -62,6 +62,9 @@ namespace WincorkNET
         public static extern bool TranslateZ(int ID, float deltaZ);
 
         [DllImport("Wincork.dll", CallingConvention=CallingConvention.Cdecl)]
+        public static extern bool Translate(int ID, float deltaX, float deltaY, float deltaZ);
+
+        [DllImport("Wincork.dll", CallingConvention=CallingConvention.Cdecl)]
         public static extern bool Rotate180X(int ID);
 
         [DllImport("Wincork.dll", CallingConvention=CallingConvention.Cdecl)]

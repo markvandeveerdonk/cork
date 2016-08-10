@@ -265,6 +265,15 @@ void translateZ(CorkTriMesh& in0, float deltaZ)
 	}
 }
 
+void translate(CorkTriMesh& in0, float deltaX, float deltaY, float deltaZ)
+{
+	for (uint i = 0; i < in0.n_vertices; i++) {
+		in0.vertices[3 * i + 0] += deltaX;
+		in0.vertices[3 * i + 1] += deltaY;
+		in0.vertices[3 * i + 2] += deltaZ;
+	}
+}
+
 void rotate180X(CorkTriMesh& in0)
 {
 	float* pF = in0.vertices + 1; // Take address of first Y-coordinate
@@ -433,6 +442,16 @@ bool TranslateZ(int ID, float deltaZ)
 		return false;
 	}
 	translateZ(*it->second, deltaZ);
+	return true;
+}
+
+bool Translate(int ID, float deltaX, float deltaY, float deltaZ)
+{
+	auto it = meshDict.find(ID);
+	if (it == meshDict.end()) {
+		return false;
+	}
+	translate(*it->second, deltaX, deltaY, deltaZ);
 	return true;
 }
 
