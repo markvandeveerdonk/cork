@@ -25,10 +25,62 @@
 // +-------------------------------------------------------------------------
 
 #include "files.h"
-
+#include <stdio.h>
 #include <map>
 
 using std::string;
+
+static size_t getline(char **lineptr, size_t *n, FILE *stream) {
+	char *bufptr = NULL;
+	char *p = bufptr;
+	size_t size;
+	int c;
+
+	if (lineptr == NULL) {
+		return -1;
+	}
+	if (stream == NULL) {
+		return -1;
+	}
+	if (n == NULL) {
+		return -1;
+	}
+	bufptr = *lineptr;
+	size = *n;
+
+	c = fgetc(stream);
+	if (c == EOF) {
+		return -1;
+	}
+	if (bufptr == NULL) {
+		bufptr = (char*)malloc(128);
+		if (bufptr == NULL) {
+			return -1;
+		}
+		size = 128;
+	}
+	p = bufptr;
+	while (c != EOF) {
+		if ((size_t)(p - bufptr) > (size - 1)) {
+			size = size + 128;
+			bufptr = (char*)realloc(bufptr, size);
+			if (bufptr == NULL) {
+				return -1;
+			}
+		}
+		*p++ = c;
+		if (c == '\n') {
+			break;
+		}
+		c = fgetc(stream);
+	}
+
+	*p++ = '\0';
+	*lineptr = bufptr;
+	*n = size;
+
+	return p - bufptr - 1;
+}
 
 namespace Files {
 # pragma pack (1)
@@ -76,51 +128,160 @@ namespace Files {
         return index;
     }
 
-    int readSTL(string filename, FileMesh *data)
+	enum isAsciiResult {
+		FailedToRead,
+		IsAsciiStl,
+		IsNotAsciiStl
+	};
+
+	isAsciiResult isAsciiSTL(std::string filename) {
+		isAsciiResult result = FailedToRead;
+		FILE* f = fopen(filename.c_str(), "r");
+
+		const int BUFSIZE = 5;
+		char buf[BUFSIZE+1];
+		if (fread(buf, BUFSIZE, 1, f) != 1) {
+			fprintf(stderr, "Could not read header from\n");
+		} else {
+			if (strstr(buf, "solid") != nullptr) {
+				result = IsAsciiStl;
+			}
+			else {
+				result = IsNotAsciiStl;
+			}
+		}
+		return result;
+	}
+
+	int readBinaryStl(FileMesh *data, string filename)
+	{
+		std::map<tuple3d, uint32_t> vertexLookup;
+
+		FILE* f = fopen(filename.c_str(), "rb");
+		// skip header
+		if (fseek(f, 80, SEEK_SET) != 0) {
+			fprintf(stderr, "Could not skip header of file %s\n", filename.c_str());
+			fclose(f);
+			return 1;
+		}
+
+		uint32_t numTriangles;
+		if (fread(&numTriangles, sizeof(uint32_t), 1, f) != 1) {
+			fprintf(stderr, "Could not read number of triangles in %s\n", filename.c_str());
+			fclose(f);
+			return 1;
+		}
+		
+		if (numTriangles > 50000000) {
+			fprintf(stderr, "Number of triangles exceeds (arbitrarily chosen) maximum number of triangles: %u\n", numTriangles);
+			fclose(f);
+			return 1;
+		}
+
+		for (uint triangleIndex = 0; triangleIndex < numTriangles; triangleIndex++) {
+			StlTriangle triangle;
+			if (fread(&triangle, sizeof(triangle), 1, f) != 1) {
+				fprintf(stderr, "Could not read triangle %u\n (0-based)", triangleIndex);
+				fclose(f);
+				return 1;
+			}
+			FileTriangle triData;
+			triData.a = get_vertex_index(triangle.v1, data, vertexLookup);
+			triData.b = get_vertex_index(triangle.v2, data, vertexLookup);
+			triData.c = get_vertex_index(triangle.v3, data, vertexLookup);
+			data->triangles.push_back(triData);
+		}
+		fclose(f);
+		return 0;
+	}
+
+	enum {
+		LINE_SIZE = 100
+	};
+
+	static char lineBuf[LINE_SIZE + 1];
+
+	bool readLine(FILE *f, int& nRead) {
+		size_t len;
+		char *cp = 0;
+		nRead = getline(&cp, &len, f);
+		if (nRead >= 0) {
+			strncpy(lineBuf, cp, LINE_SIZE);
+			free(cp);
+		}
+		return (nRead > 0);
+	}
+
+	bool readVertexFromAsciiFile(FILE* f, tuple3d& vertex)
+	{
+		int nItemsRead = fscanf(f, "%*s %f %f %f\n", &vertex.n[0], &vertex.n[1], &vertex.n[2]);
+		return (nItemsRead == 3);
+	}
+
+	int readAsciiStl(FileMesh *data, string filename)
+	{
+		std::map<tuple3d, uint32_t> vertexLookup;
+		int nRead;
+		lineBuf[LINE_SIZE] = '\0';
+
+		FILE* f = fopen(filename.c_str(), "r");
+		// skip rest of header
+		readLine(f, nRead);
+
+		if (!readLine(f, nRead)) {
+			fprintf(stderr, "Could not read from %s (1)\n", filename.c_str());
+			fclose(f);
+			return 1;
+		}
+		int triangleCounter = 0;
+		while (strstr(lineBuf, "facet normal") != nullptr) {
+			readLine(f, nRead); // skip "outer loop"
+
+			tuple3d vertices[3];
+			for (int i = 0; i < 3; i++) {
+				if (!readVertexFromAsciiFile(f, vertices[i])) {
+					fprintf(stderr, "Could not read from %s (1)\n", filename.c_str());
+					fclose(f);
+					return 1;
+				}
+			}
+
+			FileTriangle triData;
+			triData.a = get_vertex_index(vertices[0], data, vertexLookup);
+			triData.b = get_vertex_index(vertices[1], data, vertexLookup);
+			triData.c = get_vertex_index(vertices[2], data, vertexLookup);
+			data->triangles.push_back(triData);
+
+			readLine(f, nRead); // skip "outer loop"
+			readLine(f, nRead); // skip "endfacet"
+
+			readLine(f, nRead); // Next facet?
+		}
+		fclose(f);
+
+		if (strstr(lineBuf, "endsolid") == nullptr) {
+			fprintf(stderr, "expected 'endsolid' to end file %s\n", filename.c_str());
+			fclose(f);
+			return 1;
+		}
+
+		return 0;
+	}
+
+	int readSTL(string filename, FileMesh *data)
     {
-        std::map<tuple3d, uint32_t> vertexLookup;
 
-        FILE* f = fopen(filename.c_str(), "rb");
-        if (f == NULL) {
-            fprintf(stderr, "Could not open file %s\n", filename.c_str());
-            return 1;
-        }
+		isAsciiResult isAscii = isAsciiSTL(filename);
+		if (isAscii == FailedToRead) {
+			fprintf(stderr, "Could not read header of file %s\n", filename.c_str());
+			return 1;
+		}
 
-        // skip header
-        if (fseek(f, 80, SEEK_SET) != 0) {
-            fprintf(stderr, "Could not skip header of file %s\n", filename.c_str());
-            fclose(f);
-            return 1;
-        }
-
-        uint32_t numTriangles;
-        if (fread(&numTriangles, sizeof(uint32_t), 1, f) != 1) {
-            fprintf(stderr, "Could not read number of triangles in %s\n", filename.c_str());
-            fclose(f);
-            return 1;
-        }
-
-        if (numTriangles > 50000000) {
-            fprintf(stderr, "Number of triangles exceeds (arbitrarily chosen) maximum number of triangles: %u\n", numTriangles);
-            fclose(f);
-            return 1;
-        }
-
-        for (uint triangleIndex = 0; triangleIndex < numTriangles; triangleIndex++) {
-            StlTriangle triangle;
-            if (fread(&triangle, sizeof(triangle), 1, f) != 1) {
-                fprintf(stderr, "Could not read triangle %u\n (0-based)", triangleIndex);
-                fclose(f);
-                return 1;
-            }
-            FileTriangle triData;
-            triData.a = get_vertex_index(triangle.v1, data, vertexLookup);
-            triData.b = get_vertex_index(triangle.v2, data, vertexLookup);
-            triData.c = get_vertex_index(triangle.v3, data, vertexLookup);
-            data->triangles.push_back(triData);
-        }
-        fclose(f);
-        return 0;
+		if (isAscii == IsAsciiStl) {
+			return readAsciiStl(data, filename);
+		} else if (isAscii == IsNotAsciiStl) {
+			return readBinaryStl(data, filename);
+		}
     }
 
     static void fillTriangleWithVertex(tuple3d& vertex, Vec3d& v)
