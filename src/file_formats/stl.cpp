@@ -270,18 +270,24 @@ namespace Files {
 
 	int readSTL(string filename, FileMesh *data)
     {
-
+		int result = 1;
 		isAsciiResult isAscii = isAsciiSTL(filename);
-		if (isAscii == FailedToRead) {
+		switch (isAscii)
+		{
+		case IsAsciiStl:
+			result = readAsciiStl(data, filename);
+			break;
+		case IsNotAsciiStl:
+			result = readBinaryStl(data, filename);
+			break;
+		case FailedToRead:
 			fprintf(stderr, "Could not read header of file %s\n", filename.c_str());
-			return 1;
+			break;
+		default:
+			fprintf(stderr, "Very unexpected error\n");
+			break;
 		}
-
-		if (isAscii == IsAsciiStl) {
-			return readAsciiStl(data, filename);
-		} else if (isAscii == IsNotAsciiStl) {
-			return readBinaryStl(data, filename);
-		}
+		return result;
     }
 
     static void fillTriangleWithVertex(tuple3d& vertex, Vec3d& v)
