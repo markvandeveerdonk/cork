@@ -150,6 +150,7 @@ namespace Files {
 				result = IsNotAsciiStl;
 			}
 		}
+		fclose(f);
 		return result;
 	}
 
